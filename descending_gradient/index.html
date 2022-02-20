@@ -1,0 +1,138 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <script src="https://cdn.plot.ly/plotly-2.9.0.min.js"></script>
+    <script src="dg.js"></script>
+</head>
+
+<body>
+    <button onclick="drawSphere();">Sphere</button>
+    <button onclick="drawRastrigin()">Rastrigin</button>
+    <div id="plot" style="width:1000px;height:650px;"></div>
+    <div id="log" style="display: block;
+    color: black;
+    font-size: 16px;
+    height: 400px;
+    padding-top: 50px;"></div>
+    <script>
+
+        let plot = document.getElementById('plot');
+
+
+        let low = -5.2;
+        let up = 5.2;
+        let MAX_VALUES = 35;
+
+        let vx = makeArrRanged(low, up, MAX_VALUES);
+        let vy = makeArrRanged(low, up, MAX_VALUES);
+        let vz = new Array(MAX_VALUES);
+
+        let type = '';
+
+        function drawSphere() {
+
+            for (let i = 0; i < MAX_VALUES; i++) {
+                vz[i] = new Array();
+                for (let j = 0; j < MAX_VALUES; j++) {
+                    vz[i][j] = f_sphere(vx[i], vy[j]);
+                }
+            }
+
+            draw(vz)
+
+            type = 'Sphere';
+
+            
+        }
+
+        function drawRastrigin(){
+
+            for (let i = 0; i < MAX_VALUES; i++) {
+                vz[i] = new Array();
+                for (let j = 0; j < MAX_VALUES; j++) {
+                    vz[i][j] = f_rastrigin(vx[i], vy[j]);
+                }
+            }
+
+            draw(vz)
+
+            type = 'Rastrigin';
+        }
+
+        function draw(vz){
+            var data = [{
+                x: vx,
+                y: vy,
+                z: vz,
+                type: 'surface',
+                contours: {
+                    z: {
+                        show: true,
+                        usecolormap: true,
+                        highlightcolor: "#42f462",
+                        project: { z: true }
+                    }
+                }
+            }];
+
+            var layout = {
+                title: type + ' Function',
+                autosize: true,
+                width: 900,
+                height: 700,
+                margin: {
+                    l: 65,
+                    r: 50,
+                    b: 65,
+                    t: 90,
+                }
+            };
+
+            Plotly.newPlot(plot, data, layout);
+
+
+            plot.on('plotly_click', function (data) {
+                var pts = {};
+            
+                pts.x = data.points[0].x;
+                pts.y = data.points[0].y;
+
+                let dg;
+                clear();
+                report("------------RESULTS------------")
+                report("MIN:");
+                if(type === 'Sphere')
+                    dg = descending_gradient(f_sphere, grad_f, pts.x, pts.y);
+                else
+                    dg = descending_gradient(f_rastrigin, grad_f, pts.x, pts.y);
+                
+                report(JSON.stringify(dg.min));
+                report("PATH:");
+                for(let i=0;i<dg.path.length;i++){
+                    report(JSON.stringify(dg.path[i]));
+                }
+
+            });
+        }
+
+        function clear(){
+            document.getElementById('log').innerHTML = "";
+        }
+
+        function report(log){
+            let newp = document.createElement("p");
+            let text = document.createTextNode(log);
+            newp.appendChild(text);
+            document.getElementById('log').appendChild(newp);
+            
+        }
+
+
+
+
+    </script>
+</body>
+
+</html>
