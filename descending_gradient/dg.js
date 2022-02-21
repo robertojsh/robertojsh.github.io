@@ -1,7 +1,6 @@
 
 const A = 10;//Const needed for rastrigin func
 let h = 2e-2;//amplified value
-const V_SIZE = 50;
 let NUM_MAX_STEPS = 500;
 
 //Computes the descending gradient and returns the path and the min
@@ -42,24 +41,10 @@ function descending_gradient(func,g_func,x0,y0){
 
 }
 
-function get_range_values(){
-    let v = new Array(V_SIZE);
-    let initial = -1*V_SIZE/2;
-    for(let i=0;i<V_SIZE;i++){
-        v[i] = initial++;
-    }
-    return v;
-}
-
-function randonFromRange(min,max){
-    return Math.random()  * ((max - min + 1) + min);
-}
-
 function makeArrRanged(startValue, stopValue, cardinality) {
     var arr = [];
     var step = (stopValue - startValue) / (cardinality - 1);
     for (var i = 0; i < cardinality; i++) {
-      //arr.push((startValue + (step * i)).toFixed(2));
       arr.push(startValue + (step * i));
     }
     return arr;

@@ -23,7 +23,7 @@
 
         let low = -5.2;
         let up = 5.2;
-        let MAX_VALUES = 35;
+        let MAX_VALUES = 100;
 
         let vx = makeArrRanged(low, up, MAX_VALUES);
         let vy = makeArrRanged(low, up, MAX_VALUES);
@@ -40,33 +40,36 @@
                 }
             }
 
-            draw(vz)
-
             type = 'Sphere';
 
+            draw(vz)
+
             
+
+
         }
 
-        function drawRastrigin(){
+        function drawRastrigin() {
 
             for (let i = 0; i < MAX_VALUES; i++) {
                 vz[i] = new Array();
                 for (let j = 0; j < MAX_VALUES; j++) {
                     vz[i][j] = f_rastrigin(vx[i], vy[j]);
                 }
-            }
-
-            draw(vz)
+            }            
 
             type = 'Rastrigin';
+
+            draw(vz)
         }
 
-        function draw(vz){
+        function draw(vz) {
             var data = [{
                 x: vx,
                 y: vy,
                 z: vz,
                 type: 'surface',
+                colorscale:'Earth',
                 contours: {
                     z: {
                         show: true,
@@ -95,7 +98,7 @@
 
             plot.on('plotly_click', function (data) {
                 var pts = {};
-            
+
                 pts.x = data.points[0].x;
                 pts.y = data.points[0].y;
 
@@ -103,31 +106,68 @@
                 clear();
                 report("------------RESULTS------------")
                 report("MIN:");
-                if(type === 'Sphere')
+                if (type === 'Sphere')
                     dg = descending_gradient(f_sphere, grad_f, pts.x, pts.y);
                 else
                     dg = descending_gradient(f_rastrigin, grad_f, pts.x, pts.y);
-                
+
                 report(JSON.stringify(dg.min));
                 report("PATH:");
-                for(let i=0;i<dg.path.length;i++){
+                for (let i = 0; i < dg.path.length; i++) {
                     report(JSON.stringify(dg.path[i]));
                 }
+
+                let frames = [];
+
+                let vyy = new Array();
+                let vxx = new Array();
+                let vzz = new Array();
+                for (let i = 0; i < dg.path.length; i++) {
+                    vxx[i] = dg.path[i].x;
+                    vyy[i] = dg.path[i].y;
+                    vzz[i] = dg.path[i].v;
+                }
+
+
+
+                frames.push({
+                        name: 'frame',
+                        data: [{ x: vxx, y: vyy,z : vzz }],
+                        type: 'scatter3d'
+                    });
+
+                Plotly.addFrames(plot, frames);
+
+                /*Plotly.animate(plot, ['frame'], {
+                    transition: {
+                        duration: 500,
+                        easing: 'scatter'
+                    }, frame: {
+                        duration: 500,
+                        redraw: false,
+                    },
+                    mode: 'markers'
+                });*/
+
+
+
 
             });
         }
 
-        function clear(){
+        function clear() {
             document.getElementById('log').innerHTML = "";
         }
 
-        function report(log){
+        function report(log) {
             let newp = document.createElement("p");
             let text = document.createTextNode(log);
             newp.appendChild(text);
             document.getElementById('log').appendChild(newp);
-            
+
         }
+
+
 
 
 
