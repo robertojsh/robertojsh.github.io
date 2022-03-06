@@ -1,0 +1,294 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <script src="https://cdn.plot.ly/plotly-2.9.0.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.9.0.min.js"></script>
+    <script src="functions.js"></script>
+    <script src="ga.js"></script>
+    <style>
+        .formulas {
+            height: 100px;
+        }
+
+        .formulas input,
+        .formulas img {
+            vertical-align: middle;
+        }
+    </style>
+
+</head>
+
+<body>
+    <!-- Header-->
+    <div style="padding-bottom: 15px;display: block;">
+        <h2 style="color: darkgray;">Tarea 2 - Genetic Algorithm</h2>
+        <h3 style="color: darkgray;">A00000000 - Luis Eduardo Siordia</h3>
+        <h3 style="color: darkgray;">A00354886 - Roberto Julio Saldana</h3>
+    </div>
+
+    <!--Controls-->
+    <div style="display: block;height: 350px;">
+        <div style="padding-right: 75px; float: left;border-right: .1em dashed gray">
+            <h3>Functions</h3>
+            <div class="formulas">
+                <input type="radio" name="function" value="1">
+                <img src="resources/f1.png" />
+            </div>
+
+            <div class="formulas">
+                <input type="radio" name="function" value="2" >
+                <img src="resources/f2.png" />
+            </div>
+
+            <div class="formulas">
+                <input type="radio" name="function" value="3">
+                <img src="resources/f3.png" />
+            </div>
+        </div>
+        <div style="float:left;padding-top: 4px;padding-left: 15px;">
+            <h3>Parameters:</h3>
+            <div style="display: block;margin-bottom: 3px;">N: <input id="txtPopulation" type="text"
+                    style="width: 50px;" /> </div>
+            <div style="display: block;margin-bottom: 3px;">xl: <input id="txtxl1" type="text" style="width: 30px;" /> ,
+                <input id="txtxl2" type="text" style="width: 30px;" />
+            </div>
+            <div style="display: block;margin-bottom: 3px;">xu: <input id="txtxu1" type="text" style="width: 30px;" /> ,
+                <input id="txtxu2" type="text" style="width: 30px;" />
+            </div>
+            <div style="display: block;margin-bottom: 3px;">G: <input id="txtxg" type="text" style="width: 50px;" />
+            </div>
+            <div style="display: block;margin-bottom: 3px;">M: <input id="txtm" type="text" style="width: 50px;" />
+            </div>
+            <br />
+            <div style="display: block;margin-bottom: 3px;"><button id="btnUpdate"
+                    onclick="javascript: updateParams();">Update!</button>
+            </div>
+        </div>
+    </div>
+    <br />
+    <!--Graphics-->
+    <div id= 'divGraph' style="width: 100%;text-align: center;display: none;">
+        <div style="margin: 0 auto;">
+            Generation:
+            <button id="btnBack" onclick="javascript: back();" >&lt;</button>
+            <input id='txtGen' onchange="javascript: updateGeneration();" type="text" style="width: 30x;" />
+            <button id="btnForward" onclick="javascript: forward();">&gt;</button>
+        </div>
+        <div id="plot"></div>
+    </div>
+    
+
+    <script>
+        let ga = new GA();
+        let CARDINALITY = 100;
+        let history;
+        let currentData;
+
+        $(document).ready(function () {
+            $("input[type=radio][name=function]").change(function () {
+                selectGraph();
+            });
+        });
+
+        function selectGraph() {
+
+            let optFunction = $("input[type=radio][name=function]:checked");
+
+            let generations = 100;
+            let population = 100;
+            let mutationRate = .8;
+
+            let xl = -2;
+            let xu = 2;
+            let yl = -2;
+            let yu = 2;
+
+            if (optFunction[0].value == "2") {
+
+                xl = -5;
+                xu = 5;
+                yl = -5;
+                yu = 5;
+
+            } else if (optFunction[0].value == "3") {
+
+                xl = -5;
+                xu = 5;
+                yl = -5;
+                yu = 5;
+
+            }
+
+            setParams(population, xl, xu, yl, yu, generations, mutationRate);
+            updateParams();
+
+        }
+
+        function setParams(population, xl, xu, yl, yu, generations, mutationRate) {
+
+            $("#txtPopulation").val(population);
+            $("#txtxl1").val(xl);
+            $("#txtxl2").val(yl);
+            $("#txtxu1").val(xu);
+            $("#txtxu2").val(yu);
+            $("#txtxg").val(generations);
+            $("#txtm").val(mutationRate);
+
+        }
+
+        function updateParams() {
+
+            let population = parseInt($("#txtPopulation").val());
+            let xl = parseInt($("#txtxl1").val());
+            let yl = parseInt($("#txtxl2").val());
+            let xu = parseInt($("#txtxu1").val());
+            let yu = parseInt($("#txtxu2").val());
+            let generations = parseInt($("#txtxg").val());
+            let mutationRate = parseFloat($("#txtm").val());
+
+            let optFunction = $("input[type=radio][name=function]:checked");
+
+            let f = f_dropwave;
+            if (optFunction[0].value == "1")
+                f = _f;
+            else if (optFunction[0].value == "2")
+                f = f_rastrigin;
+
+            let vx = new Array();
+            let vy = new Array();
+
+            vx = makeArrRanged(xl, xu, CARDINALITY);
+            vy = makeArrRanged(yl, yu, CARDINALITY);
+
+            let data = { "vx": vx, "vy": vy, "vz": generateVz(f,vx,vy) };
+
+            updateResults(population, generations, f, mutationRate, data, xl, xu, yl, yu);
+
+        }
+
+        function generateVz(f,vx, vy) {
+            let vz = new Array(CARDINALITY);
+            for (let i = 0; i < CARDINALITY; i++) {
+                vz[i] = new Array();
+                for (let j = 0; j < CARDINALITY; j++)
+                    vz[i][j] = f(vx[i], vy[j]);
+            }
+
+            return vz;
+        }
+
+        function updateResults(population, generations, f, mutationRate, data, xl, xu, yl, yu) {
+
+            history = new Array();
+            let results = ga.exec(population, generations, f, mutationRate, xl, xu, yl, yu,addHistory);
+
+            let data2 = makeDataFromResults(results);
+
+            $("#divGraph").show();
+
+            draw(data.vx, data.vy, data.vz, data2.vx, data2.vy, data2.vz);
+            $("#txtGen").val(generations);
+        }
+
+        function makeDataFromResults(results){
+            let vx2 = new Array();
+            let vy2 = new Array();
+            let vz2 = new Array();
+
+            for (let i = 0; i < results.length; i++) {
+                vx2.push(results[i].x);
+                vy2.push(results[i].y);
+                vz2.push(results[i].z);
+            }
+
+            return { vx: vx2, vy: vy2, vz: vz2 };
+        }
+
+        function addHistory(i,h){
+            history.push(h);
+        }
+
+        function back(){
+            let gen = parseInt($("#txtGen").val());
+            gen--;
+            if(gen > 0)
+                $("#txtGen").val(gen);
+            
+            updateGeneration();
+        }
+
+        function forward(){
+            let gen = parseInt($("#txtGen").val());
+            gen++;
+            if(history && gen <= history.length)
+                $("#txtGen").val(gen);
+
+            updateGeneration();
+        }
+
+        function updateGeneration(){
+            let genData = makeDataFromResults(history[parseInt($("#txtGen").val())-1]);
+            draw(currentData.x,currentData.y,currentData.z,genData.vx,genData.vy,genData.vz);
+        }
+
+
+        function draw(vx, vy, vz, vx2, vy2, vz3) {
+            currentData = {
+                name: 'Space',
+                x: vx,
+                y: vy,
+                z: vz,
+                type: 'surface',
+                colorscale: 'Earth',
+                contours: {
+                    z: {
+                        show: true,
+                        usecolormap: true,
+                        highlightcolor: "#42f462",
+                        project: { z: true }
+                    }
+                }
+            };
+
+            
+
+            let data2 = {
+                name: 'GA Point',
+                x: vx2,
+                y: vy2,
+                z: vz3,
+                mode: 'markers',
+                marker: {
+                    size: 12,
+                    line: {
+                        color: 'rgba(217, 217, 217, 0.14)',
+                        width: 0.5
+                    },
+                    opacity: 0.8
+                },
+                type: 'scatter3d'
+            }
+
+            var layout = {
+                title: '',
+                autosize: true,
+                width: 900,
+                height: 700,
+                margin: {
+                    l: 65,
+                    r: 50,
+                    b: 65,
+                    t: 90,
+                }
+            };
+
+            Plotly.newPlot(document.getElementById("plot"), [currentData, data2], layout);
+
+        }
+    </script>
+</body>
+
+</html>
