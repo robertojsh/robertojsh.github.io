@@ -21,7 +21,12 @@ class GA {
 
     evalFitness(gene, f) {
         gene.z = f(gene.x,gene.y);
-        gene.fitness = 1 / 1 + Math.abs(gene.z);
+        if(gene.z < 0) {
+            gene.fitness = 1 + Math.abs(gene.z);
+        }
+        else {
+            gene.fitness = 1 / (1 + gene.z);
+        }
         return gene.fitness;
     }
 
