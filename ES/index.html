@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evolution Strategies</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="utils/functions.js"></script>
+    <script src="utils/graphics.js"></script>  
+    <script src="utils/utils.js"></script>
+    <script src="ui.js"></script>
+    <script src="algorithm/es.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.9.0.min.js"></script>
+</head>
+<body>
+    <div class="container">
+      <div class="h3 row mt-3 mb-3">
+        <div class="col">
+          <div>
+            Evolution Strategies
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-3">       
+          <div class="mb-2">Pick a function:</div>   
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="functionSelected" value="functionOne" checked="true">
+            <label class="form-check-label" for="functionOne"><img src="resources/f1.png" alt="function one" height="40px"></label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="functionSelected" value="functionTwo">
+            <label class="form-check-label" for="functionTwo"><img src="resources/f4.png" alt="function two" height="40px"></label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="functionSelected" value="rastrigin">
+            <label class="form-check-label" for="rastrigin"><img src="resources/f2.png" alt="rastrigin"height="40px" ></label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="functionSelected" value="dropwave">
+            <label class="form-check-label" for="dropwave"><img src="resources/f3.png" alt="drop-wave" height="40px"></label>
+          </div>   
+          
+          <div class="mt-3 mb-2 ">Select ES Version:</div>
+          <div class="input-group mb-3">
+            <label class="input-group-text" for="esVersion">ES</label>
+            <select class="form-select" id="esVersion">
+              <option value="1+1-ES" selected>(1+1)-ES</option>
+              <option value="1+1-ES-Adap">(1+1)-ES Adap</option>
+              <option value="m+l-ES">(m+l)-ES</option>
+              <option value="m_l-ES">(m,l)-ES</option>
+            </select>
+          </div>
+
+          <div class="mt-4 mb-3">Hiper-parameters</div>
+          <div class="input-group">
+            <span class="input-group-text">xl</span>
+            <input type="text" class="form-control" id="xl" value="-2">
+            <span class="input-group-text">xu</span>  
+            <input type="text" class="form-control" id="xu" value="2">
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text">yl</span>
+            <input type="text" class="form-control" id="yl" value="-2">
+            <span class="input-group-text">yu</span>  
+            <input type="text" class="form-control" id="yu" value="2">
+          </div> 
+          <div class="input-group mb-3">
+            <span class="input-group-text">σ2</span>
+            <input type="text" class="form-control" id="var2" value="100">
+          </div>
+          <div class="input-group mb-4">
+            <span class="input-group-text">Gen #</span>
+            <input type="text" class="form-control" id="generations" value="100">
+          </div>      
+          <div class="input-group">
+            <span class="input-group-text">µ</span>
+            <input type="text" class="form-control" id="mu" value="10">
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text">λ</span>
+            <input type="text" class="form-control" id="lambda" value="10">
+          </div> 
+          <button class="btn btn-outline-primary btn-sm" onclick="startExec();">Run!</button> 
+        </div>
+        <div class="col-1"></div>
+        <div class="col-8" style="display: none;" id="graphContainer">   
+            <div class="row mb-2">
+              <div class="col">Generation displayed</div>
+            </div>
+            <div class="row">
+              <div class="col-2" >
+                <div class="input-group mb-3">
+                  <button class="input-group-text btn btn-outline-primary" id="prevGenBtn">-</button>
+                  <input type="text" class="form-control" id="generationId" value="100">
+                  <button class="input-group-text btn btn-outline-primary" id="nextGenBtn">+</button>
+                </div> 
+              </div>
+            </div>     
+            <div class="row">  
+              <div id="plot"></div>
+            </div>
+        </div>          
+      </div>
+    </div>    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
+</html>
