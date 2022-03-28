@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diferential Evolution</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="utils/file.js"></script>
+    <script src="utils/functions.js"></script>
+    <script src="utils/graphics.js"></script>  
+    <script src="utils/utils.js"></script>
+    <script src="ui.js"></script>
+    <script src="algorithm/de.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.9.0.min.js"></script>
+</head>
+<body>
+    <div class="container">
+      <div class="h3 row mt-3 mb-3">
+        <div class="col">
+          <div>
+            Diferential Evolution
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-3">       
+          <div class="mb-2">Pick a function:</div>  
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="functionSelected" value="rastrigin">
+            <label class="form-check-label" for="rastrigin">Rastrigin</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="functionSelected" value="ackley">
+            <label class="form-check-label" for="ackley">Ackley</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="functionSelected" value="sphere">
+            <label class="form-check-label" for="sphere">Sphere</label>
+          </div>   
+          
+          <div class="mt-3 mb-2 ">Select DE Version:</div>
+          <div class="input-group mb-3">
+            <label class="input-group-text" for="deVersion">DE</label>
+            <select class="form-select" id="deVersion">
+              <option value="DE/rand/1/bin" selected>DE/rand/1/bin</option>
+              <option value="DE/best/1/bin">DE/best/1/bin</option>
+              <option value="DE/best/2/bin">DE/best/2/bin</option>
+            </select>
+          </div>
+
+          <div class="mt-4 mb-3">Hiper-parameters</div>
+          <div class="input-group">
+            <span class="input-group-text">xl</span>
+            <input type="text" class="form-control" id="xl" value="-2">
+            <span class="input-group-text">xu</span>  
+            <input type="text" class="form-control" id="xu" value="2">
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text">yl</span>
+            <input type="text" class="form-control" id="yl" value="-2">
+            <span class="input-group-text">yu</span>  
+            <input type="text" class="form-control" id="yu" value="2">
+          </div> 
+          <div class="input-group mb-4">
+            <span class="input-group-text">Gen #</span>
+            <input type="text" class="form-control" id="generations" value="100">
+          </div>
+          <div class="input-group mb-4">
+            <span class="input-group-text">N</span>
+            <input type="text" class="form-control" id="population" value="100">
+          </div>     
+          <div class="input-group">
+            <span class="input-group-text">Cr</span>
+            <input type="text" class="form-control" id="cr" value="0.5">
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text">λ</span>
+            <input type="text" class="form-control" id="lambda" value="0.5">
+          </div> 
+          <button class="btn btn-outline-primary btn-sm" onclick="startExec();">Run!</button> 
+          <button class="btn btn-outline-primary btn-sm" onclick="runTest();">Run 30!</button> 
+        </div>
+        <div class="col-1"></div>
+        <div class="col-8" style="display: none;" id="graphContainer">   
+            <div class="row mb-2">
+              <div class="col-3">Generation displayed</div>
+              <div class="col-3">Best Result:</div>
+            </div>
+            <div class="row">
+              <div class="col-3" >
+                <div class="input-group mb-3">
+                  <button class="input-group-text btn btn-outline-primary" id="prevGenBtn">-</button>
+                  <input type="text" class="form-control" id="generationId" value="100">
+                  <button class="input-group-text btn btn-outline-primary" id="nextGenBtn">+</button>
+                </div>                
+              </div>
+              <div class="col-9">
+                <div class="input-group mb-3">
+                  <span class="input-group-text">X</span>
+                  <input type="text" class="form-control" id="bestX" value="">
+                  <span class="input-group-text">Y</span>
+                  <input type="text" class="form-control" id="bestY" value="">
+                  <span class="input-group-text">Z</span>
+                  <input type="text" class="form-control" id="bestZ" value="">
+                </div> 
+              </div>              
+            </div>     
+            <div class="row">  
+              <div id="plot"></div>
+            </div>
+        </div>          
+      </div>
+    </div>    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
+</html>
