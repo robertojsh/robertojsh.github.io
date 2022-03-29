@@ -61,10 +61,6 @@
               <span class="input-group-text">yu</span>  
               <input type="text" class="form-control" id="yu" value="2">
             </div> 
-            <div class="input-group mb-3">
-              <span class="input-group-text">σ2</span>
-              <input type="text" class="form-control" id="var2" value="100">
-            </div>
             <div class="input-group mb-4">
               <span class="input-group-text">Gen#</span>
               <input type="text" class="form-control" id="generations" value="100">
@@ -76,6 +72,7 @@
               </label>
             </div>     
             <button class="btn btn-outline-primary btn-sm" onclick="updateParams();">Run!</button> 
+            <button class="btn btn-outline-primary btn-sm" onclick="runTest();">Run 30!</button> 
           </div>
           <div class="col-1"></div>
           <div class="col-8">          
@@ -94,6 +91,10 @@
             <button id="btnPlay" onclick="javascript: play();">&gt;&gt;</button>
         </div>
         <div id="plot"></div>
+    </div>
+
+    <div id="log" style="display: none;">
+
     </div>
 
 
