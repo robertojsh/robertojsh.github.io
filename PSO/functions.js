@@ -26,8 +26,12 @@ function f_dropwave(x,y){
     return (-1)*( (1 + Math.cos( 12 * Math.sqrt( Math.pow(x,2) + Math.pow(y,2) ) ) ) / (0.5 * ( Math.pow(x,2) + Math.pow(y,2) ) + 2 ) );
 }
 
-function f_sphere(x,y){
+function f_sphere_2(x,y){
     return Math.pow(x+2,2) + Math.pow(y+2,2);
+}
+
+function f_sphere(x,y){
+    return (Math.pow(x,2) + Math.pow(y,2))*1;
 }
 
 let a = 20;

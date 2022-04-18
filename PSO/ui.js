@@ -103,7 +103,6 @@ function setParams(xl, xu, yl, yu, generations) {
     $("#xu").val(xu);
     $("#yu").val(yu);
     $("#generations").val(generations);
-    $("#var2").val(.2);
 
 }
 
@@ -123,6 +122,9 @@ function updateResults(generations, f, xl, xu, yl, yu) {
 
     draw(data.vx, data.vy, data.vz, data2.vx, data2.vy, data2.vz);
     $("#txtGen").val(memory.length);
+    console.log(results);
+    let b = searchBest(results);
+    report("best: x : " + b.x + ", y : " + b.y + " f(x,y) =  " + b.fitness);
 }
 
 function makeDataFromResults(results) {
@@ -140,7 +142,6 @@ function makeDataFromResults(results) {
 }
 
 function addMemory(g) {
-    console.log(g);
     memory.push(g);
 }
 
@@ -151,13 +152,13 @@ function updateGeneration() {
 
 function play(){
     $("#txtGen").val(1);
-    setTimeout(verify,500);
+    setTimeout(verify,400);
 }
 
 function verify(){
     forward();
     if($("#txtGen").val() < 100)
-        setTimeout(verify,500);
+        setTimeout(verify,400);
 }
 
 function back() {
@@ -279,3 +280,34 @@ function draw(vx, vy, vz, vx2, vy2, vz3) {
     Plotly.react(document.getElementById("plot"), wholeData, layout);
 
 }
+
+function runTest(){
+    let memory30 = [];
+    report("X      |      Y      |      fitness    ");
+    for(let i=0;i<30;i++){
+        updateParams();
+        let best = searchBest(memory[memory.length-1]);
+        report(best.x + ","+best.y+","+best.fitness);
+        
+    }
+}
+
+function searchBest(swarm){
+    let best = { fitness : Infinity};
+    for(let i=0;i<swarm.length;i++){
+        if(swarm[i].fitness < best.fitness)
+            best = swarm[i];
+    }
+
+    return best;
+}
+
+function report(log) {
+    $('#log').show();
+    let newp = document.createElement("p");
+    let text = document.createTextNode(log);
+    newp.appendChild(text);
+    document.getElementById('log').appendChild(newp);
+
+}
+
