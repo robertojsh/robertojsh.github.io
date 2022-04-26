@@ -43,6 +43,8 @@ function getFunction(functionName) {
     returnFunc = ackley;
   } else if(functionName === "sphere") {
     returnFunc = sphere;
+  } else if(functionName === "booth") {
+    returnFunc = booth;
   }
   return returnFunc;
 }
@@ -90,6 +92,35 @@ function runTest(){
   }
 }
 
+function runTestCSV() {
+  let runs = 1;
+  let objFunctions = ["rastrigin", "ackley", "sphere", "booth"];
+  let activeFunc;
+  let data = [];
+  data.push("ITERATION,FUNCTION,X,Y,Z");
+  let Nc = parseInt(document.getElementById("Nc").value);
+  let Nre = parseInt(document.getElementById("Nre").value);
+  let Ned = parseInt(document.getElementById("Ned").value);
+  let LAST_INDEX = (Nc * Nre * Ned) - 1;
+
+  objFunctions.forEach((func) => {
+    document.getElementById(func).checked = true;  
+    for(let i=1; i <= runs; i++) {      
+      console.log("Running " + i + ": " + document.getElementById(func).value);
+
+      results = [];
+      startExec();   
+      console.log(history.generations[history.generations.length-1]);
+      let bestRes = getBest(history.generations[history.generations.length-1]);
+      results.push(bestRes.x);
+      results.push(bestRes.y);
+      results.push(bestRes.z);
+      data.push(`${i},${func},${results[0]},${results[1]},${results[2]}`);
+    }
+  });
+
+  download(data.join("\n"), "results.csv", "csv");
+}
 
 function report(log) {
   $('#log').show();

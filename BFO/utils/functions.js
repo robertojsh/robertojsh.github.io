@@ -24,3 +24,8 @@ function sphere(x, y) {
   // (x+2).^2 + (y+2).^2;
   return Math.pow(x+2, 2) + Math.pow(y+2, 2);
 }
+
+function booth(x, y) {
+  // f(x,y)= (x+2y-7)^2+(2x+y-5)^2
+  return Math.pow((x + (2*y) - 7), 2) + Math.pow((2*x) + y -5, 2);
+}
